@@ -28,6 +28,7 @@ class Section(db.Model):
     __tablename__ = 'section'
     section_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String)
+    # date_created = db.Column()
 
 
 
