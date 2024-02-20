@@ -1,6 +1,8 @@
 from .database import db
 from flask_security import UserMixin, RoleMixin
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
+import datetime
 
 roles_users = db.Table('roles_users',
                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
@@ -13,7 +15,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String, unique=True)
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String(255))
-    active = db.Column(db.Boolean())
+    isActive = db.Column(db.Boolean())
     roles = db.relationship('Role', secondary = roles_users, backref=db.backref('users', lazy = 'dynamic'))
 
 
@@ -26,13 +28,16 @@ class Role(db.Model, RoleMixin):
 
 class Section(db.Model):
     __tablename__ = 'section'
-    section_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String)
-    # date_created = db.Column()
-
-
+    sec_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    sec_name = db.Column(db.String(255), unique = True, nullable = False)
+    doc = db.Column(datetime(timezone=True), server_default=func.now(), nullable = False) # date of creation
+    desc = db.Column(db.String(255))
 
 class Book(db.Model):
     __tablename__ = 'book'
-    book_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    content = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), nullable = False)
+    doi = db.Column(datetime(timezone=True), server_default=func.now(), nullable=False)
+    # dor = db.Column() # think on this
+    sec_id = db.relationship('Section', )    
