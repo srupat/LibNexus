@@ -3,6 +3,8 @@ from flask_security import UserMixin, RoleMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 import datetime
+from sqlalchemy import ForeignKey, func
+from sqlalchemy import DateTime, func
 
 roles_users = db.Table('roles_users',
                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
@@ -30,7 +32,7 @@ class Section(db.Model):
     __tablename__ = 'section'
     sec_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     sec_name = db.Column(db.String(255), unique = True, nullable = False)
-    doc = db.Column(datetime(timezone=True), server_default=func.now(), nullable = False) # date of creation
+    doc = db.Column(db.DateTime(timezone=True), default=datetime.datetime.utcnow, nullable=False) # date of creation
     desc = db.Column(db.String(255))
 
 class Book(db.Model):
@@ -38,6 +40,6 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable = False)
-    doi = db.Column(datetime(timezone=True), server_default=func.now(), nullable=False)
+    doi = db.Column(db.DateTime(timezone=True), default=datetime.datetime.utcnow, nullable=False)
     # dor = db.Column() # think on this
-    sec_id = db.relationship('Section', )    
+    sec_id = db.Column(db.Integer, ForeignKey("section.id"))    
