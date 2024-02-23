@@ -1,12 +1,13 @@
 import os
 from flask import Flask, request
-from flask import render_template
+from flask import render_template, render_template_string
 from application.config import LocalDevelopmentConfig
 from flask_restful import Resource, Api
 from application.database import db
 from flask_security import Security, SQLAlchemySessionUserDatastore, SQLAlchemyUserDatastore
 from application.models import Role, User
-from application.controllers import *
+# from application.controllers import *
+from flask_security import login_required, roles_required, auth_required
 
 
 def create_app():
@@ -27,8 +28,9 @@ def create_app():
 app, api = create_app()
 
 @app.route("/", methods=["GET", "POST"])
+@auth_required()
 def test():
-    return render_template("index.html")
+    return render_template_string("Hello {{current_user.email}}!")
 
 
 @app.before_first_request

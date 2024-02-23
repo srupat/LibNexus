@@ -17,7 +17,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String, unique=True)
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String(255))
-    isActive = db.Column(db.Boolean())
+    active = db.Column(db.Boolean())
     roles = db.relationship('Role', secondary = roles_users, backref=db.backref('users', lazy = 'dynamic'))
 
 
@@ -41,5 +41,5 @@ class Book(db.Model):
     content = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable = False)
     doi = db.Column(db.DateTime(timezone=True), default=datetime.datetime.utcnow, nullable=False)
-    # dor = db.Column() # think on this
+    dor = db.Column(db.DateTime(timezone=True), nullable=False) 
     sec_id = db.Column(db.Integer, ForeignKey("section.id"))    
