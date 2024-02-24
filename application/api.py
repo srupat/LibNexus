@@ -20,18 +20,13 @@ class UserAPI(Resource):
     @marshal_with(output_fields)
     def get(self, username):
         
-        # get the username
         print('In UserAPI GET Method', username)
-        # get the user from database based on username
         user = db.session.query(User).filter(User.username == username).first()
 
         if user:
-            # return a valid user json
             return user
         else:
-            # return 404 error
             raise NotFoundError(status_code = 404)
-        # format the return json
 
     @marshal_with(output_fields)
     def put(self, username):
@@ -65,16 +60,10 @@ class UserAPI(Resource):
 
 
     def delete(self, username):
-        # check if the user exists
         user = db.session.query(User).filter(User.username == username).first()
 
         if user is None:
             raise NotFoundError(status_code = 404)
-        # Check if there are articles for this user, throw exception
-        articles = Article.query.filter(Article.authors.any(username = username)).first()
-        if articles:
-            raise BusinessValidationError(status_code = 400, error_code = "BE1005", error_message = "cant delete users as there are articles written by this user")
-        # if no dependency then delete
         db.session.delete(user)
         db.session.commit()
         return "", 200
