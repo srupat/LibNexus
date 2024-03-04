@@ -8,30 +8,29 @@ from flask_security import Security, SQLAlchemySessionUserDatastore, SQLAlchemyU
 from application.models import Role, User, Section, Book
 # from application.controllers import *
 from flask_security import login_required, roles_required, auth_required
-from application.custom_forms import ExtendedLoginForm, ExtendedRegisterForm
+from application.forms import *
 
 
 def create_app():
     app = Flask(__name__, template_folder="templates")
     app.config.from_object(LocalDevelopmentConfig)
-    with app.app_context():        
-        db.init_app(app)
-        api = Api(app)  
-        user_datastore = SQLAlchemySessionUserDatastore(db.session, User, Role)
-        security = Security(app, user_datastore)  
+    db.init_app(app)
+    api = Api(app)  
+    user_datastore = SQLAlchemySessionUserDatastore(db.session, User, Role)
+    security = Security(app, user_datastore)
+    app.app_context().push()
     return app, api
     
 
 
 app, api = create_app()
 
-@app.route("/", methods=["GET", "POST"])
-@login_required
-def test():
-    return render_template_string("Hello {{current_user.email}}!")
-
 from application.api import *
 api.add_resource(UserAPI, "/api/user", "/api/user/<string:username>")
+
+# * leave it, use the registration of flask security only
+
+from application.controllers import *
 
 
 @app.before_first_request
