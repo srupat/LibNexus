@@ -28,7 +28,6 @@ app, api = create_app()
 from application.api import *
 api.add_resource(UserAPI, "/api/user", "/api/user/<string:username>")
 
-# * leave it, use the registration of flask security only
 
 from application.controllers import *
 
