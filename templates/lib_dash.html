@@ -7,14 +7,14 @@
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
-    <script type="text/javascript" src="{{ url_for('static', filename='js/custom_validations.js') }}"></script>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand mb-0 h1" href="#">LibNexus</a>
+            <a class="navbar-brand mb-0 h1" href="#">
+                LibNexus
+            </a>
             <!-- TODO enter ai generated logo here -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -44,7 +44,21 @@
         </div>
     </nav>
 
-    
+    <p>Welcome, {{ current_user.email }}</p>
+
+    {% for section in sections %}
+    {{ section }}
+    <div class="card" style="width: 18rem;">
+        <img src="https://picsum.photos/15 class=" card-img-top alt="sorry">
+        <div class="card-body">
+            <h5 class="card-title">{{ sec_name }}</h5>
+            <p class="card-text">{{ desc }}</p>
+            <a href="#" class="btn btn-primary">Go to Books</a>
+        </div>
+    </div>
+    {% endfor %}
+
+    <a href="/create/section">Add section</a>
 </body>
 
 </html>
