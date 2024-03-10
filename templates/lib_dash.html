@@ -44,19 +44,21 @@
         </div>
     </nav>
 
-    <p>Welcome, {{ current_user.email }}</p>
+    <p><h3>Welcome, {{ current_user.email }}</h3></p>
 
-    {% for section in sections %}
-    {{ section }}
-    <div class="card" style="width: 18rem;">
-        <img src="https://picsum.photos/15 class=" card-img-top alt="sorry">
-        <div class="card-body">
-            <h5 class="card-title">{{ sec_name }}</h5>
-            <p class="card-text">{{ desc }}</p>
-            <a href="#" class="btn btn-primary">Go to Books</a>
+    <div style="display: flex;flex-direction: row;justify-content: space-evenly;">
+        {% for section in sections %}
+        <div class="card" style="width: 18rem;">
+            <img src="https://source.unsplash.com/random/286x300" style="height: fit-content; width: fit-content;"    class="card-img-top alt" alt="sorry">
+            <div class="card-body">
+                <h5 class="card-title">{{ section["sec_name"] }}</h5>
+                <p class="card-text">{{ section["desc"] }}</p>
+                <p class="date-created">{{ section["doc"] }}</p>
+                <a href="#" class="btn btn-primary">Go to Books</a>
+            </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 
     <a href="/create/section">Add section</a>
 </body>
