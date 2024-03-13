@@ -49,18 +49,19 @@
     <div style="display: flex;flex-direction: row;justify-content: space-evenly;">
         {% for section in sections %}
         <div class="card" style="width: 18rem;">
-            <img src="https://source.unsplash.com/random/286x300" style="height: fit-content; width: fit-content;"    class="card-img-top alt" alt="sorry">
+            <img src="https://source.unsplash.com/random/286x300/?book,books,suspense,crime" style="height: fit-content; width: fit-content;"    class="card-img-top alt" alt="sorry">
             <div class="card-body">
                 <h5 class="card-title">{{ section["sec_name"] }}</h5>
                 <p class="card-text">{{ section["desc"] }}</p>
                 <p class="date-created">{{ section["doc"] }}</p>
-                <a href="#" class="btn btn-primary">Go to Books</a>
+                <a href="/create/books" class="btn btn-primary">Add a book</a><br><br>
+                <a href="/view/books" class="btn btn-primary">View Books</a>
             </div>
         </div>
         {% endfor %}
     </div>
 
-    <a href="/create/section">Add section</a>
+    <div><a href="/create/section" class="btn btn-info">Add section</a></div>
 </body>
 
 </html>

@@ -10,7 +10,8 @@ from sqlalchemy import select
 @login_required
 @roles_required()
 def librarian_home():
-    return render_template("lib_dash.html")
+    sections = Section.query.all()
+    return render_template("lib_dash.html", sections = sections)
 
 
 @app.route("/create/section", methods = ["GET", "POST"])
