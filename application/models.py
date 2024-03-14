@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 import datetime
 from sqlalchemy import ForeignKey, func
-from sqlalchemy import DateTime, func
+from sqlalchemy import DateTime, func, DATE
 
 roles_users = db.Table('roles_users',
                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
@@ -38,7 +38,8 @@ class Book(db.Model):
     __tablename__ = 'book'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content = db.Column(db.String(255), nullable=False)
+    genre = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable = False)
     doi = db.Column(db.DateTime(timezone=True), default=datetime.datetime.utcnow, nullable=False)
-    dor = db.Column(db.DateTime(timezone=True), nullable=False) 
-    sec_id = db.Column(db.Integer, ForeignKey("section.id"))    
+    dor = db.Column(db.Date, nullable=False) 
+    sec_id = db.Column(db.Integer, ForeignKey("section.sec_id"))    

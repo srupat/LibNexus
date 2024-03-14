@@ -11,7 +11,7 @@
 
 <body>
     <div style="padding: 30px; margin: 20px;">
-        <form action="/create/books" method="post">
+        <form action="/create/books/{{ section_id }}" method="post">
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Name of Book</label>
                 <input type="text" class="form-control" id="exampleFormControlInput1" name="name" required>
@@ -20,18 +20,25 @@
                 <label for="exampleFormControlTextarea1" class="form-label">Book description</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="desc"
                     required></textarea>
-            </div>
-            <label>Select Date: </label>
-            <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
-                <input class="form-control" type="text" readonly />
-                <span class="input-group-addon">
-                    <i class="glyphicon glyphicon-calendar"></i>
-                </span>
-            </div>
+            </div>            
             <div class="mb-3">
-                <label for="formFile" class="form-label">Upload image (optional)</label>
+                <label for="exampleFormControlTextarea1" class="form-label">Book Genre</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="1" name="genre"
+                    required></textarea>
+            </div>            
+            <div class="mb-3">
+                <label for="formDate" class="form-label">Upload image (optional)</label>
                 <input class="form-control" type="file" id="formFile" name="image">
             </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Choose return date</label>
+                <input type="date" id="date_id" name="date">
+            </div>
+            <!-- <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Enter return date</label>
+                <textarea class="form-control" id="date" rows="1" name="date"
+                    required></textarea> -->
+            </div>  
             <div>
                 <input class="btn btn-success" type="submit" value="Submit">
             </div>
