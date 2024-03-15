@@ -3,7 +3,7 @@ from flask import render_template, render_template_string
 from flask import current_app as app
 from application.models import *
 from application.forms import ExtendedRegisterForm
-from flask_security import login_required, roles_required
+from flask_security import login_required, roles_required, current_user
 from sqlalchemy import select
 from datetime import datetime
 
@@ -12,7 +12,11 @@ from datetime import datetime
 @roles_required()
 def librarian_home():
     sections = Section.query.all()
-    return render_template("lib_dash.html", sections = sections)
+    if(current_user.has_role('librarian')):
+        return render_template("lib_dash.html", sections = sections)
+    else:
+        current_user.roles.append(Role(name='reader'))
+        return render_template("user_dash.html")
 
 
 @app.route("/create/section", methods = ["GET", "POST"])
