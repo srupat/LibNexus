@@ -55,8 +55,8 @@
                 <h5 class="card-title">{{ section["sec_name"] }}</h5>
                 <p class="card-text">{{ section["desc"] }}</p>
                 <p class="date-created">{{ section["doc"] }}</p>
-                <a href="/create/books/{{ section_id }}" class="btn btn-primary">Add a book</a><br><br>
-                <a href="/view/books" class="btn btn-primary">View Books</a>
+                <a href="/create/books/{{ section["sec_id"] }}" class="btn btn-primary">Add a book</a><br><br>
+                <a href="/view/books/{{ section["sec_id"] }}" class="btn btn-primary">View Books</a>
             </div>
         </div>
         {% endfor %}

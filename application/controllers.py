@@ -59,7 +59,12 @@ def create_new_book(section_id):
                 print(e)
                 return render_template_string("book already exists")
         # query the books here that match with the section id
-        books = Book.query.filter_by(sec_id = section_id).all()
-        return render_template("sec_books.html", books = books)
+        return render_template("success.html")
+    
+
+@app.route("/view/books/<int:section_id>", methods = ["GET"])
+def view_books(section_id):
+    books = Book.query.filter_by(sec_id = section_id).all()
+    return render_template("sec_books.html", books = books)
 
 
