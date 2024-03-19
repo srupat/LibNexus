@@ -45,7 +45,9 @@
     </nav>
 
     <p><h3>Welcome, {{ current_user.email }}</h3></p>
-    <h5>Your role : <p>{{ current_user.roles[0] }}</p></h5>
+    {% for role in current_user.roles %}
+        <h5>Your role : {{role.name}}</h5>
+    {% endfor %}
     <!-- ! add current_user.role here  -->
 
     <div style="display: flex;flex-direction: row;justify-content: space-evenly;">

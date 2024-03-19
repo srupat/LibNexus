@@ -12,10 +12,9 @@ from datetime import datetime
 @roles_required()
 def librarian_home():
     sections = Section.query.all()
-    if(current_user.has_role('librarian')):
+    if('librarian' in current_user.roles):
         return render_template("lib_dash.html", sections = sections)
     else:
-        current_user.roles.append(Role(name='reader'))
         return render_template("user_dash.html")
 
 
