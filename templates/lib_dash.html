@@ -44,11 +44,16 @@
         </div>
     </nav>
 
+    <div style="padding-top: 3px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 3px;"> 
     <p><h3>Welcome, {{ current_user.email }}</h3></p>
     {% for role in current_user.roles %}
         <h5>Your role : {{role.name}}</h5>
     {% endfor %}
-    <!-- ! add current_user.role here  -->
+    <hr>
+    </div>
 
     <div style="display: flex;flex-direction: row;justify-content: space-evenly;">
         {% for section in sections %}
@@ -64,7 +69,7 @@
         </div>
         {% endfor %}
     </div>
-
+    <br><br>
     <div><a href="/create/section" class="btn btn-info">Add section</a></div>
 </body>
 

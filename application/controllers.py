@@ -12,10 +12,11 @@ from datetime import datetime
 @roles_required()
 def librarian_home():
     sections = Section.query.all()
+    books = Book.query.all()
     if('librarian' in current_user.roles):
         return render_template("lib_dash.html", sections = sections)
     else:
-        return render_template("user_dash.html")
+        return render_template("user_dash.html", sections = sections, books = books)
 
 
 @app.route("/create/section", methods = ["GET", "POST"])
