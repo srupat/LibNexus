@@ -72,3 +72,25 @@ def view_books(section_id):
     return render_template("sec_books.html", books = books)
 
 
+@app.route("/books/request/<int:user_id>/<int:book_id>", methods = ["GET", "POST"])
+def request_books(user_id, book_id):
+    if request.method == "GET":
+        return render_template("request_book.html", user_id = user_id, book_id = book_id)
+    if request.method == "POST":
+        with app.app_context():
+            try:
+                date_of_return_str = request.form['date']
+                date_of_return = datetime.strptime(date_of_return_str, '%Y-%m-%d').date()
+                print(date_of_return_str)
+                newBookIssue = BooksUsers(return_date = date_of_return, user_id = user_id, book_id = book_id)
+                db.session.close_all()
+                db.session.add(newBookIssue)
+                db.session.commit()
+                print("success")
+            except Exception as e:
+                db.session.rollback()
+                print(e)
+                return render_template_string("user has already issued this book")
+        return render_template("success.html")
+
+

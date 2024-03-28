@@ -38,8 +38,18 @@ class Book(db.Model):
     __tablename__ = 'book'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content = db.Column(db.String(255), nullable=False)
-    genre = db.Column(db.String(255), nullable=False)
+    author = db.Column(db.String(255), nullable=False)
+    # * add author field to book db
+    # genre = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable = False)
-    doi = db.Column(db.DateTime(timezone=True), default=datetime.datetime.utcnow, nullable=False)
-    dor = db.Column(db.Date, nullable=False) 
-    sec_id = db.Column(db.Integer, ForeignKey("section.sec_id"))    
+    sec_id = db.Column(db.Integer, ForeignKey("section.sec_id"))   
+
+
+class BooksUsers(db.Model):
+    __tablename__ = 'books_users'
+    bu_id = db.Column(db.Integer, primary_key= True, autoincrement=True)
+    book_id = db.Column(db.Integer, ForeignKey("book.id"))
+    user_id = db.Column(db.Integer, ForeignKey("user.id"))
+    issue_date = db.Column(db.DateTime(timezone=True), default=datetime.datetime.utcnow, nullable=False)
+    return_date = db.Column(db.Date, nullable=False) 
+    isApproved = db.Column(db.Integer, nullable = False, default = 0)
