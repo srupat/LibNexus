@@ -11,10 +11,10 @@
     <div style="display: flex;flex-direction: row;justify-content: space-evenly;">
         {% for book in books %}
         <div class="card" style="width: 18rem;">
-            <img src="https://source.unsplash.com/random/286x300/?{{ book["genre"] }},{{ book["name"] }}" style="height: fit-content; width: fit-content;"    class="card-img-top alt" alt="sorry">
+            <img src="https://source.unsplash.com/random/286x300/?{{ book["author"] }},{{ book["name"] }}" style="height: fit-content; width: fit-content;"    class="card-img-top alt" alt="sorry">
             <div class="card-body">
                 <h5 class="card-title">{{ book["name"] }}</h5>
-                <p class="card-text">{{ book["genre"] }}</p>
+                <p class="card-text">{{ book["author"] }}</p>
             </div>
         </div>
         {% endfor %}
