@@ -75,9 +75,14 @@ def view_books(section_id):
 @app.route("/books/request/<int:user_id>/<int:book_id>", methods = ["GET", "POST"])
 def request_books(user_id, book_id):
     if request.method == "GET":
+        books_for_user = BooksUsers.query.filter_by(user_id = user_id).all()
+        print(len(books_for_user))
+        if(len(books_for_user) > 5):
+            return render_template("failure.html")
         return render_template("request_book.html", user_id = user_id, book_id = book_id)
     if request.method == "POST":
         with app.app_context():
+            
             try:
                 date_of_return_str = request.form['date']
                 date_of_return = datetime.strptime(date_of_return_str, '%Y-%m-%d').date()
@@ -128,5 +133,12 @@ def return_book(book_id):
     else:
         return "Book not found", 404
     
-    
+@app.route("/view/<int:book_id>", methods = ["GET"])
+def view_book_info(book_id):
+    book = Book.query.get(book_id)
+    return render_template("book_info.html", book = book)
+
+@app.route("/view-content", methods = ["GET"])
+def view_content():
+    return render_template("view_content.html")
 

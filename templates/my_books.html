@@ -68,7 +68,7 @@
                 <input type="hidden" name="book_id" value="{{ book.id }}">
                 <button class="btn btn-warning" type="submit">Return</button>
             </form>
-            
+
         </div>
         {% endfor %}
         <hr>
@@ -79,7 +79,9 @@
             <div>
                 <h5>{{ book["name"] }}</h5> {{book["author"]}}
             </div>
-            <button class="btn btn-success">View</button>
+            <form action="/view/{{book.id}}" method="get">
+                <button class="btn btn-success" type="submit">View</button>
+            </form>
         </div>
         {% endfor %}
     </div>
