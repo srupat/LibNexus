@@ -1,6 +1,7 @@
 from .database import db
 from flask_security import UserMixin, RoleMixin
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql import func
 import datetime
 from sqlalchemy import ForeignKey, func
@@ -40,7 +41,6 @@ class Book(db.Model):
     content = db.Column(db.String(255), nullable=False)
     author = db.Column(db.String(255), nullable=False)
     # * add author field to book db
-    # genre = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable = False)
     sec_id = db.Column(db.Integer, ForeignKey("section.sec_id"))   
 
@@ -53,3 +53,9 @@ class BooksUsers(db.Model):
     issue_date = db.Column(db.DateTime(timezone=True), default=datetime.datetime.utcnow, nullable=False)
     return_date = db.Column(db.Date, nullable=False) 
     isApproved = db.Column(db.Integer, nullable = False, default = 0)
+    isReturned = db.Column(db.Integer, nullable = False, default = 0)
+
+
+    @hybrid_property
+    def isCompleted(self):
+        return self.isApproved and self.isReturned
