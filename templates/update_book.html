@@ -11,7 +11,8 @@
 
 <body>
     <div style="padding: 30px; margin: 20px;">
-        <form action="/create/books/{{ section_id }}" method="post">
+        <form action="/update/book/{{ book_id }}" method="post">
+            <input type="hidden" name="_method" value="PUT">
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Name of Book</label>
                 <input type="text" class="form-control" id="exampleFormControlInput1" name="name" required>

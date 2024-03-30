@@ -40,7 +40,6 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content = db.Column(db.String(255), nullable=False)
     author = db.Column(db.String(255), nullable=False)
-    # * add author field to book db
     name = db.Column(db.String(255), nullable = False)
     sec_id = db.Column(db.Integer, ForeignKey("section.sec_id"))   
 

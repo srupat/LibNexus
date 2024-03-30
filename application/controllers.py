@@ -4,7 +4,7 @@ from flask import current_app as app
 from application.models import *
 from application.forms import ExtendedRegisterForm
 from flask_security import login_required, roles_required, current_user
-from sqlalchemy import select
+from sqlalchemy import select, update, delete
 from datetime import datetime
 
 @app.route("/", methods = ["GET", "POST"])
@@ -142,3 +142,59 @@ def view_book_info(book_id):
 def view_content():
     return render_template("view_content.html")
 
+@app.route("/update/section/<int:sec_id>", methods = ["GET", "PUT", "POST"])
+def update_section(sec_id):
+    if request.method == "GET":
+        return render_template("update_sec.html", sec_id = sec_id)
+    if request.method == "POST" or request.form.get("_method") == "PUT":
+        sec_name = request.form['name']
+        desc = request.form['desc']
+        section = Section.query.get(sec_id)
+        if section:
+            section.sec_name = sec_name
+            section.desc = desc
+            db.session.commit()
+            return render_template("success.html")
+        else:
+            return "section not found", 404
+        
+@app.route("/delete/section/<int:sec_id>", methods = ["DELETE", "POST"])
+def delete_section(sec_id):
+    if request.method == "POST" or request.form.get("_method") == "DELETE":
+        section = Section.query.get(sec_id)
+        if section:
+            db.session.delete(section)
+            db.session.commit()
+            return render_template("success.html")
+        else:
+            return "section not found", 404
+        
+
+@app.route("/update/book/<int:book_id>", methods = ["GET", "PUT", "POST"])
+def update_book(book_id):
+    if request.method == "GET":
+        return render_template("update_book.html", book_id = book_id)
+    if request.method == "POST" or request.form.get("_method") == "PUT":
+        book_name = request.form['name']
+        desc = request.form['desc']
+        book_author = request.form['author']
+        book = Book.query.get(book_id)
+        if book:
+            book.name = book_name
+            book.desc = desc
+            book.author = book_author
+            db.session.commit()
+            return render_template("success.html")
+        else:
+            return "book not found", 404
+        
+@app.route("/delete/book/<int:book_id>", methods = ["DELETE", "POST"])
+def delete_book(book_id):
+    if request.method == "POST" or request.form.get("_method") == "DELETE":
+        book = Book.query.get(book_id)
+        if book:
+            db.session.delete(book)
+            db.session.commit()
+            return render_template("success.html")
+        else:
+            return "book not found", 404
