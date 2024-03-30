@@ -138,8 +138,11 @@ def view_book_info(book_id):
     book = Book.query.get(book_id)
     return render_template("book_info.html", book = book)
 
-@app.route("/view-content", methods = ["GET"])
-def view_content():
+@app.route("/view-content/<int:book_id>", methods = ["GET"])
+def view_content(book_id):
+    bu = BooksUsers.query.filter_by(book_id = book_id).all()
+    if(bu.return_date < bu.issue_date):
+        return render_template_string('please request this book again!')
     return render_template("view_content.html")
 
 @app.route("/update/section/<int:sec_id>", methods = ["GET", "PUT", "POST"])
