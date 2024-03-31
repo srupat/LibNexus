@@ -42,8 +42,8 @@ class Book(db.Model):
     content = db.Column(db.String(255), nullable=False)
     author = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable = False)
-    sec_id = db.Column(db.Integer, ForeignKey("section.sec_id"))   
-
+    sec_id = db.Column(db.Integer, ForeignKey("section.sec_id")) 
+    download_path = db.Column(db.String(255))
 
 class BooksUsers(db.Model):
     __tablename__ = 'books_users'

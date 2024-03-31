@@ -47,13 +47,10 @@ def create_new_book(section_id):
         book_name = request.form['name']
         book_desc = request.form['desc']
         book_author = request.form['author']
-        date_of_return_str = request.form['date']
-        print(date_of_return_str)
-        date_of_return = datetime.strptime(date_of_return_str, '%Y-%m-%d').date()
 
         with app.app_context():
             try:
-                new_book = Book(content = book_desc, author = book_author, name = book_name, dor = date_of_return, sec_id = section_id)
+                new_book = Book(content = book_desc, author = book_author, name = book_name, sec_id = section_id)
                 db.session.close_all()
                 db.session.add(new_book)
                 db.session.commit()
@@ -107,7 +104,7 @@ def my_books():
         for bu in books_users:
             if bu.isCompleted:
                 completed_book_ids.append(bu.book_id)
-            elif not bu.isReturned:
+            elif bu.isApproved:
                 current_book_ids.append(bu.book_id)
 
         user_current_books = Book.query.filter(Book.id.in_(current_book_ids)).all()
@@ -265,17 +262,23 @@ def grant_book_access():
     else:
         return "Book not found", 404
     
-@app.route('/section/search', methods = ['GET'])
+@app.route('/section/search', methods=['GET'])
 def search_sections():
-    query = request.form['search_section']
-    sections = Section.query.filter(Section.sec_name.like("%"+query+"%")).all()
-    return render_template('lib_dash.html', sections = sections)
+    query = request.args.get('search_section')
+    if query:
+        sections = Section.query.filter(Section.sec_name.like("%" + query + "%")).all()
+        return render_template('lib_dash.html', sections=sections)
+    else:
+        return "No search query provided", 400
 
-@app.route('/book/search', methods = ['GET'])
+@app.route('/book/search', methods=['GET'])
 def search_books():
-    query = request.form['search_book']
-    books = Book.query.filter(Book.name.like("%"+query+"%")).all()
-    return render_template('sec_books.html', books = books)
+    query = request.args.get('search_book')
+    if query:
+        books = Book.query.filter(Book.name.like("%" + query + "%")).all()
+        return render_template('lib_dash.html', books=books)
+    else:
+        return "No search query provided", 400
 
 # @app.route('/stats', methods = ['GET'])
 # def get_stats():
@@ -300,7 +303,9 @@ def search_books():
 
 #     return render_template('stats.html')
 
+
 @app.route('/download/<int:book_id>', methods = ['GET'])
 def download_book(book_id):
-    file_path = 'D:/Srujan/College/SY/exam/os/Process_scheduling.pdf'
+    book = Book.query.get(book_id)
+    file_path = book.download_path
     return send_file(file_path, as_attachment=True)
