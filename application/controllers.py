@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, send_file
 from flask import render_template, render_template_string
 from flask import current_app as app
 from application.models import *
@@ -276,3 +276,31 @@ def search_books():
     query = request.form['search_book']
     books = Book.query.filter(Book.name.like("%"+query+"%")).all()
     return render_template('sec_books.html', books = books)
+
+# @app.route('/stats', methods = ['GET'])
+# def get_stats():
+#     sections = db.session.query(Section.sec_name, func.count(Book.id)) \
+#                         .join(Book, Section.sec_id == Book.sec_id) \
+#                         .group_by(Section.sec_name).all()
+    
+#     section_names = [sec[0] for sec in sections]
+#     book_counts = [count for _, count in sections]
+
+#     plt.figure(figsize=(10, 6))
+#     plt.bar(section_names, book_counts, color='skyblue')
+#     plt.xlabel('Sections')
+#     plt.ylabel('Number of Books')
+#     plt.title('Number of Books in Each Section')
+#     plt.xticks(rotation=45, ha='right')
+#     plt.tight_layout()
+
+#     plt.savefig('stats.png')
+
+#     plt.close()
+
+#     return render_template('stats.html')
+
+@app.route('/download/<int:book_id>', methods = ['GET'])
+def download_book(book_id):
+    file_path = 'D:/Srujan/College/SY/exam/os/Process_scheduling.pdf'
+    return send_file(file_path, as_attachment=True)

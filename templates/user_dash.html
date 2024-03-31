@@ -73,6 +73,7 @@
                     <h5 class="card-title">{{ book["name"] }}</h5>
                     <p class="card-text">{{ book["author"] }}</p>
                     <a href="/books/request/{{ current_user.id }}/{{ book["id"] }}" class="btn btn-primary">Request Book</a><br><br>
+                    <a href="/download/{{ book["id"] }}" class="btn btn-primary" download>Download Book</a>
                 </div>
             </div>
             {% endif %}

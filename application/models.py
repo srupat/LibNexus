@@ -7,6 +7,7 @@ import datetime
 from sqlalchemy import ForeignKey, func
 from sqlalchemy import DateTime, func, DATE
 
+
 roles_users = db.Table('roles_users',
                        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
                        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
@@ -59,3 +60,5 @@ class BooksUsers(db.Model):
     @hybrid_property
     def isCompleted(self):
         return self.isApproved and self.isReturned
+    
+
