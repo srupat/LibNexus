@@ -264,3 +264,15 @@ def grant_book_access():
         return "Access given"
     else:
         return "Book not found", 404
+    
+@app.route('/section/search', methods = ['GET'])
+def search_sections():
+    query = request.form['search_section']
+    sections = Section.query.filter(Section.sec_name.like("%"+query+"%")).all()
+    return render_template('lib_dash.html', sections = sections)
+
+@app.route('/book/search', methods = ['GET'])
+def search_books():
+    query = request.form['search_book']
+    books = Book.query.filter(Book.name.like("%"+query+"%")).all()
+    return render_template('sec_books.html', books = books)
