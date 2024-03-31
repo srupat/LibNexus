@@ -72,7 +72,7 @@ def view_books(section_id):
     return render_template("sec_books.html", books = books)
 
 
-@app.route("/books/request/<int:user_id>/<int:book_id>", methods = ["GET", "POST"])
+@app.route("/books/request/<int:book_id>/<int:user_id>", methods = ["GET", "POST"])
 def request_books(user_id, book_id):
     if request.method == "GET":
         books_for_user = BooksUsers.query.filter_by(user_id = user_id).all()
@@ -81,8 +81,7 @@ def request_books(user_id, book_id):
             return render_template("failure.html")
         return render_template("request_book.html", user_id = user_id, book_id = book_id)
     if request.method == "POST":
-        with app.app_context():
-            
+        with app.app_context():            
             try:
                 date_of_return_str = request.form['date']
                 date_of_return = datetime.strptime(date_of_return_str, '%Y-%m-%d').date()
@@ -201,3 +200,15 @@ def delete_book(book_id):
             return render_template("success.html")
         else:
             return "book not found", 404
+        
+@app.route("/feedback/<int:book_id>", methods = ["GET", "POST"])
+def give_feedback(book_id):
+    books_for_user = BooksUsers.query.filter_by(book_id = book_id).first()
+    if request.method == "POST":
+        if books_for_user:
+            feedback = request.form['feedback']
+            books_for_user.feedback = feedback
+            db.session.commit()
+            return render_template("success.html")
+        else:
+            return "feedback not submitted", 404

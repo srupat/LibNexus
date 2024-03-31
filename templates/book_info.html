@@ -12,7 +12,8 @@
         crossorigin="anonymous"></script>
     <style>
         /* CSS to center the div */
-        body, html {
+        body,
+        html {
             height: 100%;
         }
 
@@ -35,8 +36,18 @@
         <p>{{ book.content }}</p><br><br>
         <a href="/view-content/{{ book.id }}" class="btn btn-primary">Read the book</a><br><br>
         <a href="/my-books">Go back to my books</a>
-    </div>
-    
+        <div style="padding: 30px; margin: 20px;">
+            <form action="/feedback/{{ book.id }}" method="post">
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Give feedback</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="feedback" ></textarea>
+                </div>
+                <div>
+                    <input class = "btn btn-success" type="submit" value="Submit">
+                </div>
+            </form>
+        </div>
+
 </body>
 
 </html>
