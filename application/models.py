@@ -53,6 +53,7 @@ class BooksUsers(db.Model):
     return_date = db.Column(db.Date, nullable=False) 
     isApproved = db.Column(db.Integer, nullable = False, default = 0)
     isReturned = db.Column(db.Integer, nullable = False, default = 0)
+    isRejected = db.Column(db.Integer, nullable = False, default = 0)
     feedback = db.Column(db.String(255))
 
     @hybrid_property

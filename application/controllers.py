@@ -75,7 +75,7 @@ def view_books(section_id):
 @app.route("/books/request/<int:book_id>/<int:user_id>", methods = ["GET", "POST"])
 def request_books(user_id, book_id):
     if request.method == "GET":
-        books_for_user = BooksUsers.query.filter_by(user_id = user_id).all()
+        books_for_user = BooksUsers.query.filter_by(user_id = user_id, book_id = book_id).all()
         print(len(books_for_user))
         if(len(books_for_user) > 5):
             return render_template("failure.html")
@@ -212,3 +212,55 @@ def give_feedback(book_id):
             return render_template("success.html")
         else:
             return "feedback not submitted", 404
+        
+
+@app.route("/about", methods = ["GET"])
+def about():
+    return render_template("about.html")
+
+
+@app.route('/requests', methods = ["GET", "POST"])
+def librarian_requests():
+    if request.method == "GET":
+        books_users = BooksUsers.query.all()
+        requests_not_granted = {}
+        requests_granted = {}
+        for book_user in books_users:
+            book = Book.query.get(book_user.book_id)
+            user = User.query.get(book_user.user_id)
+            if book_user.isApproved:
+                if user not in requests_granted:
+                    requests_granted[user] = [book]
+                else:
+                    requests_granted[user].append(book)
+            if not book_user.isApproved and not book_user.isRejected:
+                if user not in requests_not_granted:
+                    requests_not_granted[user] = [book]
+                else:
+                    requests_not_granted[user].append(book)
+        return render_template('lib_requests.html', requests_granted = requests_granted, requests_not_granted = requests_not_granted)
+
+
+@app.route("/reject-access", methods = ["POST"])
+def reject_book_access():
+    book_id = request.form['book_id']
+    book = BooksUsers.query.filter_by(book_id = book_id).first()
+    if book:
+        if not book.isRejected:
+            book.isRejected = 1
+            db.session.commit()
+        return "Access rejected"
+    else:
+        return "Book not found", 404
+    
+@app.route("/grant-access", methods = ["POST"])
+def grant_book_access():
+    book_id = request.form['book_id']
+    book = BooksUsers.query.filter_by(book_id = book_id).first()
+    if book:
+        if not book.isApproved:
+            book.isApproved = 1
+            db.session.commit()
+        return "Access given"
+    else:
+        return "Book not found", 404
