@@ -47,10 +47,10 @@ def create_new_book(section_id):
         book_name = request.form['name']
         book_desc = request.form['desc']
         book_author = request.form['author']
-
+        download_path = request.form['path']
         with app.app_context():
             try:
-                new_book = Book(content = book_desc, author = book_author, name = book_name, sec_id = section_id)
+                new_book = Book(content = book_desc, author = book_author, name = book_name, sec_id = section_id, download_path = download_path)
                 db.session.close_all()
                 db.session.add(new_book)
                 db.session.commit()
@@ -136,8 +136,8 @@ def view_book_info(book_id):
 
 @app.route("/view-content/<int:book_id>", methods = ["GET"])
 def view_content(book_id):
-    bu = BooksUsers.query.filter_by(book_id = book_id).all()
-    if(bu.return_date < bu.issue_date):
+    bu = BooksUsers.query.filter_by(book_id = book_id).first()
+    if(bu.return_date < datetime.date(bu.issue_date)):
         return render_template_string('please request this book again!')
     return render_template("view_content.html")
 
