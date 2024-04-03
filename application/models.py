@@ -57,8 +57,3 @@ class BooksUsers(db.Model):
     isRejected = db.Column(db.Integer, nullable = False, default = 0)
     feedback = db.Column(db.String(255))
 
-    @hybrid_property
-    def isCompleted(self):
-        return self.isApproved and self.isReturned
-    
-

@@ -6,6 +6,12 @@ from application.forms import ExtendedRegisterForm
 from flask_security import login_required, roles_required, current_user
 from sqlalchemy import select, update, delete
 from datetime import datetime
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+from flask import Response
+import io
+import matplotlib.pyplot as plt
+import base64
 
 @app.route("/", methods = ["GET", "POST"])
 @login_required
@@ -69,13 +75,18 @@ def view_books(section_id):
     return render_template("sec_books.html", books = books)
 
 
-@app.route("/books/request/<int:book_id>/<int:user_id>", methods = ["GET", "POST"])
+@app.route("/books/request/<int:user_id>/<int:book_id>", methods = ["GET", "POST"])
 def request_books(user_id, book_id):
     if request.method == "GET":
-        books_for_user = BooksUsers.query.filter_by(user_id = user_id, book_id = book_id).all()
+        books_for_user = BooksUsers.query.filter_by(user_id = user_id).all()
         print(len(books_for_user))
         if(len(books_for_user) > 5):
             return render_template("failure.html")
+        requested_book = BooksUsers.query.filter_by(user_id=user_id, book_id=book_id).first()
+        if requested_book:
+            if not requested_book.isReturned:
+                return 'You have already requested for this book', 400
+
         return render_template("request_book.html", user_id = user_id, book_id = book_id)
     if request.method == "POST":
         with app.app_context():            
@@ -102,7 +113,7 @@ def my_books():
         completed_book_ids = []
         current_book_ids = []
         for bu in books_users:
-            if bu.isCompleted:
+            if bu.isApproved and bu.isReturned:
                 completed_book_ids.append(bu.book_id)
             elif bu.isApproved:
                 current_book_ids.append(bu.book_id)
@@ -225,7 +236,7 @@ def librarian_requests():
         for book_user in books_users:
             book = Book.query.get(book_user.book_id)
             user = User.query.get(book_user.user_id)
-            if book_user.isApproved:
+            if book_user.isApproved and not book_user.isRejected:
                 if user not in requests_granted:
                     requests_granted[user] = [book]
                 else:
@@ -243,10 +254,22 @@ def reject_book_access():
     book_id = request.form['book_id']
     book = BooksUsers.query.filter_by(book_id = book_id).first()
     if book:
-        if not book.isRejected:
-            book.isRejected = 1
-            db.session.commit()
+        book.isApproved = 0
+        book.isRejected = 1
+        db.session.commit()
         return "Access rejected"
+    else:
+        return "Book not found", 404
+    
+@app.route("/revoke-access", methods = ["POST"])
+def revoke_book_access():
+    book_id = request.form['book_id']
+    book = BooksUsers.query.filter_by(book_id = book_id).first()
+    if book:
+        book.isApproved = 1
+        book.isRejected = 1
+        db.session.commit()
+        return "Access revoked"
     else:
         return "Book not found", 404
     
@@ -255,9 +278,9 @@ def grant_book_access():
     book_id = request.form['book_id']
     book = BooksUsers.query.filter_by(book_id = book_id).first()
     if book:
-        if not book.isApproved:
-            book.isApproved = 1
-            db.session.commit()
+        book.isRejected = 0
+        book.isApproved = 1
+        db.session.commit()
         return "Access given"
     else:
         return "Book not found", 404
@@ -280,28 +303,33 @@ def search_books():
     else:
         return "No search query provided", 400
 
-# @app.route('/stats', methods = ['GET'])
-# def get_stats():
-#     sections = db.session.query(Section.sec_name, func.count(Book.id)) \
-#                         .join(Book, Section.sec_id == Book.sec_id) \
-#                         .group_by(Section.sec_name).all()
+@app.route('/stats', methods=['GET'])
+def get_stats():
+    sections = db.session.query(Section.sec_name, func.count(Book.id)) \
+                        .join(Book, Section.sec_id == Book.sec_id) \
+                        .group_by(Section.sec_name).all()
+
+    section_names = [sec[0] for sec in sections]
+    book_counts = [count for _, count in sections]
+
+    fig = Figure(figsize=(10, 6))
+    ax = fig.add_subplot(111)
+    ax.bar(section_names, book_counts, color='skyblue')
+    ax.set_xlabel('Sections')
+    ax.set_ylabel('Number of Books')
+    ax.set_title('Number of Books in Each Section')
+    ax.tick_params(axis='x', rotation=45)
+    fig.tight_layout()
+
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    # plt.close(fig)
+
+    pngImageB64String = "data:image/png;base64,"
+    pngImageB64String += base64.b64encode(output.getvalue()).decode('utf8')
     
-#     section_names = [sec[0] for sec in sections]
-#     book_counts = [count for _, count in sections]
+    return render_template("lib_stats.html", image=pngImageB64String)
 
-#     plt.figure(figsize=(10, 6))
-#     plt.bar(section_names, book_counts, color='skyblue')
-#     plt.xlabel('Sections')
-#     plt.ylabel('Number of Books')
-#     plt.title('Number of Books in Each Section')
-#     plt.xticks(rotation=45, ha='right')
-#     plt.tight_layout()
-
-#     plt.savefig('stats.png')
-
-#     plt.close()
-
-#     return render_template('stats.html')
 
 
 @app.route('/download/<int:book_id>', methods = ['GET'])

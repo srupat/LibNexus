@@ -88,7 +88,7 @@
                 <h5>{{ book.name }}</h5> {{ user.email }}
             </div>
             <div style="display: flex; flex-direction: row;">
-            <form action="/reject-access" method="post">
+            <form action="/revoke-access" method="post">
                 <input type="hidden" name="book_id" value="{{ book.id }}">
                 <button class="btn btn-warning" type="submit">Revoke</button>
             </form>
