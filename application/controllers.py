@@ -357,3 +357,30 @@ def download_book(book_id):
     book = Book.query.get(book_id)
     file_path = book.download_path
     return send_file(file_path, as_attachment=True)
+
+
+@app.route('/user/stats/<int:user_id>', methods=['GET'])
+def books_read_by_section(user_id):
+    books_read = db.session.query(Section.sec_name, func.count(Book.id)) \
+                           .join(Book, Section.sec_id == Book.sec_id) \
+                           .join(BooksUsers, Book.id == BooksUsers.book_id) \
+                           .filter(BooksUsers.user_id == user_id) \
+                           .group_by(Section.sec_name).all()
+
+    section_names = [sec[0] for sec in books_read]
+    book_counts = [count for _, count in books_read]
+
+    fig = Figure(figsize=(10, 6))
+    ax = fig.add_subplot(111)
+    ax.bar(section_names, book_counts, color='skyblue')
+    ax.set_xlabel('Sections')
+    ax.set_ylabel('Number of Books Read')
+    ax.set_title('Number of Books Read by Section')
+    ax.tick_params(axis='x', rotation=45)
+    fig.tight_layout()
+
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    pngImageB64String = "data:image/png;base64," + base64.b64encode(output.getvalue()).decode('utf8')
+
+    return render_template("books_read_by_section.html", image=pngImageB64String)
