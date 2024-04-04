@@ -303,7 +303,7 @@ def search_books():
     else:
         return "No search query provided", 400
 
-@app.route('/stats', methods=['GET'])
+@app.route('/lib/stats', methods=['GET'])
 def get_stats():
     sections = db.session.query(Section.sec_name, func.count(Book.id)) \
                         .join(Book, Section.sec_id == Book.sec_id) \
@@ -327,8 +327,28 @@ def get_stats():
 
     pngImageB64String = "data:image/png;base64,"
     pngImageB64String += base64.b64encode(output.getvalue()).decode('utf8')
+
+    statuses = db.session.query(BooksUsers.isApproved, BooksUsers.isReturned, BooksUsers.isRejected).all()
+    approved_count = sum(status[0] for status in statuses)
+    returned_count = sum(status[1] for status in statuses)
+    rejected_count = sum(status[2] for status in statuses)
+
+    labels = ['Approved', 'Returned', 'Rejected']
+    counts = [approved_count, returned_count, rejected_count]
+
+    fig1 = Figure(figsize=(8, 6))
+    ax1 = fig1.add_subplot(111)
+    ax1.pie(counts, labels=labels, autopct='%1.1f%%', startangle=140)
+    ax1.axis('equal') 
+    ax1.set_title('Distribution of Book Status')
+
+    output1 = io.BytesIO()
+    FigureCanvas(fig1).print_png(output1)
+
+    pngImageB64String1 = "data:image/png;base64,"
+    pngImageB64String1 += base64.b64encode(output1.getvalue()).decode('utf8')
     
-    return render_template("lib_stats.html", image=pngImageB64String)
+    return render_template("lib_stats.html", image=pngImageB64String, image1=pngImageB64String1)
 
 
 
